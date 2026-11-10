@@ -1,0 +1,43 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## BMC OnDemand for WooCommerce ${{ github.ref_name }}
+
+            ### Enlaces públicos de descarga directa:
+            - **Última versión:** [bmc-ondemand-woo.zip](https://github.com/VKliquea/bmc-ondemand-woocommerce-release/releases/latest/download/bmc-ondemand-woo.zip)
+            - **Versión específica:** [bmc-ondemand-woo-${{ github.ref_name }}.zip](https://github.com/VKliquea/bmc-ondemand-woocommerce-release/releases/download/${{ github.ref_name }}/bmc-ondemand-woo-${{ github.ref_name }}.zip)
+
+            ### Instalación en WordPress:
+            1. Descarga el archivo `bmc-ondemand-woo.zip`.
+            2. En tu panel de administración de WordPress, ve a **Plugins > Añadir nuevo > Subir plugin**.
+            3. Selecciona el archivo descargado y haz clic en **Instalar ahora**.
+            4. Activa el plugin.
+          files: |
+            bmc-ondemand-woo.zip
+            bmc-ondemand-woo-*.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
