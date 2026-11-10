@@ -41,3 +41,15 @@ jobs:
           generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up ZIP files from main branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          if ls *.zip 1> /dev/null 2>&1; then
+            git rm *.zip
+            git commit -m "chore: clean up ZIP files after release ${{ github.ref_name }} [skip ci]"
+            git push origin main
+          fi
